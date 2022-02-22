@@ -8,3 +8,11 @@ resource "aws_vpc" "tftest_vpc" {
         Name = "tftest_vpc"
     }
 } 
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.tftest_vpc.id
+  
+  tags = {
+    Name = "tftest-IGW"
+  }
+}
