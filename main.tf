@@ -11,8 +11,8 @@ module "database" {
   db_engine_version      = "5.7.22"
   db_instance_class      = "db.t2.micro"
   db_name                = "rancher"
-  dbuser                 = "bobby"
-  dbpassword             = "t430oie2d"
+  dbuser                 = var.dbuser
+  dbpassword             = var.dbpassword
   db_identifier          = "tftest-db"
   skip_db_snapshot       = true
   db_subnet_group_name   = ""

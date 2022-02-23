@@ -7,9 +7,9 @@ variable "aws_region" {
 
 # --- database variables ---
 
-variable "dbname" {
-  type = string
-}
+#variable "dbname" {
+#  type = string
+#}
 
 variable "dbuser" {
   type = string
