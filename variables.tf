@@ -1,5 +1,5 @@
 # ---- root/variables.tf ----
 
 variable "aws_region" {
-    default = "ap-southeast-2"
+  default = "ap-southeast-2"
 } 

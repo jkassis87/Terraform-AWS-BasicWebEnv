@@ -1,13 +1,13 @@
 # ---- network/main.tf ----
 resource "aws_vpc" "tftest_vpc" {
-    cidr_block = var.vpc_cidr
-    enable_dns_hostnames = true
-    enable_dns_support = true
+  cidr_block           = var.vpc_cidr
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
-    tags = {
-        Name = "tftest_vpc"
-    }
-} 
+  tags = {
+    Name = "tftest_vpc"
+  }
+}
 
 resource "aws_internet_gateway" "tftest_igw" {
   vpc_id = aws_vpc.tftest_vpc.id
@@ -36,27 +36,27 @@ resource "aws_security_group" "tftest_sg" {
   vpc_id      = aws_vpc.tftest_vpc.id
 
   ingress {
-    description      = "HTTPS"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.tftest_vpc.cidr_block]
-  }
-
-    ingress {
-    description      = "HTTP"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.tftest_vpc.cidr_block]
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
   }
 
   ingress {
-    description      = "SSH"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.tftest_vpc.cidr_block]
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
   }
 
   egress {
@@ -68,6 +68,7 @@ resource "aws_security_group" "tftest_sg" {
   }
 
   tags = {
-    Name = "tftest_security_group"
+    Name = "tftest_pub_sg"
   }
 }
+
