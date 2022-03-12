@@ -1,4 +1,7 @@
 # ---- network/main.tf ----
+
+# data "aws_availability_zones" "available" {}
+
 resource "aws_vpc" "tftest_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -7,7 +10,36 @@ resource "aws_vpc" "tftest_vpc" {
   tags = {
     Name = "tftest_vpc"
   }
+
+  lifecycle {
+  create_before_destroy = true
+  }
 }
+
+resource "aws_subnet" "tftest_public_subnet" {
+  count                   = 1
+  vpc_id                  = aws_vpc.tftest_vpc.id
+  cidr_block              = var.public_cidr
+  map_public_ip_on_launch = true
+  availability_zone       = var.availability_zone
+
+  tags = {
+    Name = "tftest_pub_subnet"
+  }
+}
+
+resource "aws_subnet" "tftest_private_subnet" {
+  count                   = 1
+  vpc_id                  = aws_vpc.tftest_vpc.id
+  cidr_block              = var.private_cidr
+  map_public_ip_on_launch = false
+  availability_zone       = var.availability_zone
+
+  tags = {
+    Name = "tftest_pub_subnet"
+  }
+}
+
 
 resource "aws_internet_gateway" "tftest_igw" {
   vpc_id = aws_vpc.tftest_vpc.id
@@ -30,7 +62,7 @@ resource "aws_route_table" "tftest_rt" {
   }
 }
 
-resource "aws_security_group" "tftest_sg" {
+resource "aws_security_group" "tftest_pub_sg" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.tftest_vpc.id

@@ -3,6 +3,9 @@
 module "network" {
   source   = "./network"
   vpc_cidr = "10.123.0.0/16"
+  availability_zone = "ap-southeast-2"
+  public_cidr = "10.123.2.0/24"
+  private_cidr = "10.123.7.0/24"
 }
 
 module "database" {
@@ -15,7 +18,7 @@ module "database" {
   dbpassword             = var.dbpassword
   db_identifier          = "tftest-db"
   skip_db_snapshot       = true
-  db_subnet_group_name   = ""
+  db_subnet_group_name   = "tftest_pubsg"
   vpc_security_group_ids = []
 }
 
