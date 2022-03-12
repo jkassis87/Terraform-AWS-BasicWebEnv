@@ -12,12 +12,12 @@ resource "aws_vpc" "tftest_vpc" {
   }
 
   lifecycle {
-  create_before_destroy = true
+    create_before_destroy = true
   }
 }
 
 resource "aws_subnet" "tftest_public_subnet" {
-  count                   = 1
+  #count                   = 1
   vpc_id                  = aws_vpc.tftest_vpc.id
   cidr_block              = var.public_cidr
   map_public_ip_on_launch = true
@@ -62,7 +62,7 @@ resource "aws_route_table" "tftest_rt" {
   }
 }
 
-resource "aws_security_group" "tftest_pub_sg" {
+resource "aws_security_group" "tftest_public_sg" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.tftest_vpc.id
@@ -100,7 +100,7 @@ resource "aws_security_group" "tftest_pub_sg" {
   }
 
   tags = {
-    Name = "tftest_pub_sg"
+    Name = "tftest_public_sg"
   }
 }
 

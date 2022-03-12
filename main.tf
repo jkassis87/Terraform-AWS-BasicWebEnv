@@ -1,11 +1,11 @@
 # ---- root/main.tf ----
 
 module "network" {
-  source   = "./network"
-  vpc_cidr = "10.123.0.0/16"
+  source            = "./network"
+  vpc_cidr          = "10.123.0.0/16"
   availability_zone = "ap-southeast-2"
-  public_cidr = "10.123.2.0/24"
-  private_cidr = "10.123.7.0/24"
+  public_cidr       = "10.123.2.0/24"
+  private_cidr      = "10.123.7.0/24"
 }
 
 module "database" {
@@ -22,3 +22,10 @@ module "database" {
   vpc_security_group_ids = []
 }
 
+module "compute" {
+  source         = "./compute"
+  public_sg      = module.network.public_sg
+  public_subnet  = module.network.public_subnet
+  instance_count = 1
+  instance_type  = "t2.micro"
+}

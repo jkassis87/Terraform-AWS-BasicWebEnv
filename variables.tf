@@ -2,7 +2,7 @@
 
 variable "aws_region" {
   default = "ap-southeast-2"
-} 
+}
 
 
 # --- database variables ---
@@ -12,11 +12,11 @@ variable "aws_region" {
 #}
 
 variable "dbuser" {
-  type = string
+  type      = string
   sensitive = "true"
 }
 
 variable "dbpassword" {
-  type = string
+  type      = string
   sensitive = "true"
 }
