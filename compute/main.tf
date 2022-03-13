@@ -16,6 +16,12 @@ data "aws_ami" "webserver_ami" {
 
 }
 
+resource "aws_key_pair" "mtc_auth" {
+  key_name   = var.key_name
+  public_key = file(var.public_key_path)
+}
+
+
 resource "aws_instance" "tftest_webserver" {
   count         = var.instance_count
   ami           = data.aws_ami.webserver_ami.id
@@ -24,6 +30,8 @@ resource "aws_instance" "tftest_webserver" {
   tags = {
     Name = "Web Server"
   }
-  subnet_id              = var.public_subnet
+  subnet_id              = var.public_subnet[count.index]
   vpc_security_group_ids = [var.public_sg]
+
+  key_name               = var.key_name
 }

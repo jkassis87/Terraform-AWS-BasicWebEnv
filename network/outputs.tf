@@ -9,5 +9,9 @@ output "public_sg" {
 }
 
 output "public_subnet" {
-  value = aws_subnet.tftest_public_subnet.id
+  value = aws_subnet.tftest_public_subnet.*.id
+}
+
+output "db_subnet_group_name" {
+  value = aws_db_subnet_group.tftest_rds_subnet_group.*.name
 }

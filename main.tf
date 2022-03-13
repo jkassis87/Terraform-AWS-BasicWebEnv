@@ -2,10 +2,14 @@
 
 module "network" {
   source            = "./network"
-  vpc_cidr          = "10.123.0.0/16"
-  availability_zone = "ap-southeast-2"
-  public_cidr       = "10.123.2.0/24"
-  private_cidr      = "10.123.7.0/24"
+  vpc_cidr          = local.vpc_cidr
+  #availability_zone = "ap-southeast-2a"
+  public_cidr       = [for i in range(2, 255, 2) : cidrsubnet(local.vpc_cidr, 8, i)]
+  private_cidr      = [for i in range(1, 255, 2) : cidrsubnet(local.vpc_cidr, 8, i)]
+  #rds_availability_zone = "ap-southeast-2c"
+  public_sn_count  = 1
+  private_sn_count = 2
+  max_subnets      = 20
 }
 
 module "database" {
@@ -18,7 +22,7 @@ module "database" {
   dbpassword             = var.dbpassword
   db_identifier          = "tftest-db"
   skip_db_snapshot       = true
-  db_subnet_group_name   = "tftest_pubsg"
+  db_subnet_group_name   = module.network.db_subnet_group_name[0]
   vpc_security_group_ids = []
 }
 
@@ -28,4 +32,7 @@ module "compute" {
   public_subnet  = module.network.public_subnet
   instance_count = 1
   instance_type  = "t2.micro"
+
+  key_name = "tftest_sshkey" 
+  public_key_path     = "~/.ssh/id_rsa.pub"
 }

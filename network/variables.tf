@@ -5,13 +5,27 @@ variable "vpc_cidr" {
 }
 
 variable "public_cidr" {
-  type = string
+  type = list(any)
 }
 
 variable "private_cidr" {
-  type = string
+  type = list(any)
 }
 
-variable "availability_zone" {
+/* variable "availability_zone" {
   type = string
+} */
+
+# variable "rds_availability_zone" {}
+
+variable "max_subnets" {
+  type = number
+}
+
+variable "public_sn_count" {
+  type = number
+}
+
+variable "private_sn_count" {
+  type = number
 }

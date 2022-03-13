@@ -1,6 +1,11 @@
 # ---- network/main.tf ----
 
-# data "aws_availability_zones" "available" {}
+ data "aws_availability_zones" "available" {}
+
+ resource "random_shuffle" "az_list" {
+  input        = data.aws_availability_zones.available.names
+  result_count = var.max_subnets
+}
 
 resource "aws_vpc" "tftest_vpc" {
   cidr_block           = var.vpc_cidr
@@ -17,11 +22,11 @@ resource "aws_vpc" "tftest_vpc" {
 }
 
 resource "aws_subnet" "tftest_public_subnet" {
-  #count                   = 1
+  count                   = var.public_sn_count
   vpc_id                  = aws_vpc.tftest_vpc.id
-  cidr_block              = var.public_cidr
+  cidr_block              = var.public_cidr[count.index]
   map_public_ip_on_launch = true
-  availability_zone       = var.availability_zone
+  availability_zone       = random_shuffle.az_list.result[count.index]
 
   tags = {
     Name = "tftest_pub_subnet"
@@ -29,14 +34,23 @@ resource "aws_subnet" "tftest_public_subnet" {
 }
 
 resource "aws_subnet" "tftest_private_subnet" {
-  count                   = 1
+  count                   = var.private_sn_count
   vpc_id                  = aws_vpc.tftest_vpc.id
-  cidr_block              = var.private_cidr
+  cidr_block              = var.private_cidr[count.index]
   map_public_ip_on_launch = false
-  availability_zone       = var.availability_zone
+  availability_zone       = random_shuffle.az_list.result[count.index]
 
   tags = {
-    Name = "tftest_pub_subnet"
+    Name = "tftest_private_subnet"
+  }
+}
+
+resource "aws_db_subnet_group" "tftest_rds_subnet_group" {
+  
+  name       = "tftest_rds_subnet_group"
+  subnet_ids = aws_subnet.tftest_private_subnet.*.id
+  tags = {
+    Name = "tftest_rds_sng"
   }
 }
 
