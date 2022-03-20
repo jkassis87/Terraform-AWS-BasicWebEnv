@@ -33,6 +33,13 @@ resource "aws_subnet" "tftest_public_subnet" {
   }
 }
 
+resource "aws_route_table_association" "tftest_public_assoc" {
+  count          = var.public_sn_count
+  subnet_id      = aws_subnet.tftest_public_subnet.*.id[count.index]
+  route_table_id = aws_route_table.tftest_rt.id
+}
+
+
 resource "aws_subnet" "tftest_private_subnet" {
   count                   = var.private_sn_count
   vpc_id                  = aws_vpc.tftest_vpc.id
@@ -67,7 +74,7 @@ resource "aws_route_table" "tftest_rt" {
   vpc_id = aws_vpc.tftest_vpc.id
 
   route {
-    cidr_block = "0.0.0.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.tftest_igw.id
   }
 
@@ -86,7 +93,8 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -94,7 +102,8 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -102,7 +111,17 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "ICMP"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
