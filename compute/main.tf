@@ -2,18 +2,12 @@
 
 data "aws_ami" "webserver_ami" {
   most_recent = true
-  owners      = ["679593333241"]
 
   filter {
-    name   = "name"
-    values = ["AlmaLinux OS 8.4 x86_64-c076b20a-2305-4771-823f-944909847a05"]
+    name = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
   }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
+  owners = ["amazon"]
 }
 
 resource "aws_key_pair" "mtc_auth" {
