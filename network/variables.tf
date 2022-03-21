@@ -12,12 +12,6 @@ variable "private_cidr" {
   type = list(any)
 }
 
-/* variable "availability_zone" {
-  type = string
-} */
-
-# variable "rds_availability_zone" {}
-
 variable "max_subnets" {
   type = number
 }

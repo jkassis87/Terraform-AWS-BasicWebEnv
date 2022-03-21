@@ -4,7 +4,7 @@ data "aws_ami" "webserver_ami" {
   most_recent = true
 
   filter {
-    name = "name"
+    name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-ebs"]
   }
   owners = ["amazon"]
@@ -27,5 +27,5 @@ resource "aws_instance" "tftest_webserver" {
   subnet_id              = var.public_subnet[count.index]
   vpc_security_group_ids = [var.public_sg]
 
-  key_name               = var.key_name
+  key_name = var.key_name
 }

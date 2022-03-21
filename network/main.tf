@@ -1,8 +1,8 @@
 # ---- network/main.tf ----
 
- data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {}
 
- resource "random_shuffle" "az_list" {
+resource "random_shuffle" "az_list" {
   input        = data.aws_availability_zones.available.names
   result_count = var.max_subnets
 }
@@ -53,7 +53,7 @@ resource "aws_subnet" "tftest_private_subnet" {
 }
 
 resource "aws_db_subnet_group" "tftest_rds_subnet_group" {
-  
+
   name       = "tftest_rds_subnet_group"
   subnet_ids = aws_subnet.tftest_private_subnet.*.id
   tags = {
@@ -93,7 +93,6 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -102,7 +101,6 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -111,7 +109,6 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -120,7 +117,6 @@ resource "aws_security_group" "tftest_public_sg" {
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
-    #cidr_blocks = [aws_vpc.tftest_vpc.cidr_block]
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -137,3 +133,29 @@ resource "aws_security_group" "tftest_public_sg" {
   }
 }
 
+resource "aws_security_group" "tftest_rds_sg" {
+  name        = "MySQL"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = aws_vpc.tftest_vpc.id
+
+  ingress {
+    description      = "MySQL"
+    from_port        = 3306
+    to_port          = 3306
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "tftest_public_sg"
+  }
+}
