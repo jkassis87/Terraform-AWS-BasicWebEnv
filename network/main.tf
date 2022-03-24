@@ -128,6 +128,14 @@ resource "aws_security_group" "tftest_public_sg" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  ingress {
+    description = "Puppet"
+    from_port   = 8140
+    to_port     = 8140
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     Name = "tftest_public_sg"
   }
